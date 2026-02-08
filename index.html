@@ -1,0 +1,697 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Valentine 💘</title>
+  <style>
+    :root{
+      --bg:#fff7fb; --card:#ffffffd9; --border:#ffd1dd;
+      --text:#111827; --muted:#6b7280;
+      --accent:#ff2d55; --accent2:#ff6b8a;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 20% 10%, #ffe6ee, transparent 55%),
+        radial-gradient(circle at 80% 0%, #ffe7c7, transparent 55%),
+        radial-gradient(circle at 60% 90%, #e9fbff, transparent 55%),
+        linear-gradient(180deg,#fff,var(--bg));
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+    .wrap{max-width:940px; margin:0 auto; padding:26px 16px 90px;}
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      backdrop-filter: blur(10px);
+      border-radius:20px;
+      padding:22px;
+      box-shadow: 0 16px 38px rgba(255,45,85,.12);
+      overflow:hidden;
+      position:relative;
+    }
+    h1{margin:0 0 8px; font-size:34px; line-height:1.12;}
+    p{margin:10px 0; line-height:1.6; font-size:16px; color:#1f2937}
+    .muted{color:var(--muted)}
+    .divider{height:1px; background:linear-gradient(90deg,transparent,#ffd1dd,transparent); margin:18px 0;}
+    .row{display:grid; gap:16px; grid-template-columns:1.2fr .8fr;}
+    @media (max-width:860px){ .row{grid-template-columns:1fr;} }
+
+    .inputRow{
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:12px;
+    }
+    input[type="text"]{
+      flex:1;
+      min-width:220px;
+      padding:12px 14px;
+      border-radius:14px;
+      border:1px solid #ffd1dd;
+      outline:none;
+      font-size:16px;
+      background:#fff;
+    }
+    input[type="text"]:focus{border-color:#ff9db1; box-shadow:0 0 0 4px rgba(255,45,85,.12)}
+    .btns{display:flex; gap:12px; flex-wrap:wrap; margin-top:14px;}
+    button{
+      border:0; border-radius:14px; padding:12px 16px;
+      font-size:16px; font-weight:700; cursor:pointer;
+      transition: transform .08s ease, box-shadow .2s ease;
+      white-space:nowrap;
+    }
+    .primary{
+      background:linear-gradient(135deg,var(--accent),var(--accent2));
+      color:white;
+      box-shadow:0 12px 20px rgba(255,45,85,.22);
+    }
+    .primary:active{transform:scale(.98)}
+    .secondary{
+      background:#fff;
+      border:1px solid #ffd1dd;
+      color:#111827;
+    }
+    .secondary:hover{transform:translateY(-1px)}
+
+    .side{
+      background:#fff;
+      border:1px solid #ffe2ea;
+      border-radius:18px;
+      padding:14px;
+      box-shadow:0 10px 18px rgba(17,24,39,.06);
+    }
+
+    .photoBox{
+      width:100%;
+      aspect-ratio: 4/3;
+      border-radius:14px;
+      border:1px solid #ffe2ea;
+      background:
+        radial-gradient(circle at 30% 30%, #ffd1dd, transparent 55%),
+        radial-gradient(circle at 70% 20%, #ffe6a7, transparent 55%),
+        radial-gradient(circle at 40% 80%, #c7f9ff, transparent 55%),
+        linear-gradient(135deg, #fff, #fff3f7);
+      position:relative;
+      overflow:hidden;
+      display:grid;
+      place-items:center;
+      padding:10px;
+      text-align:center;
+      color:#6b7280;
+      font-weight:800;
+    }
+    .photoBox img{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit:cover;      /* ✅ fits portrait & landscape */
+      background:#fff7fb;      /* soft padding color */
+      display:none;
+    }
+    .photoHint{
+      position:relative;
+      z-index:2;
+      font-weight:800;
+      color:#6b7280;
+    }
+
+    .uploadRow{
+      margin-top:10px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    input[type="file"]{
+      width:100%;
+      padding:10px;
+      border-radius:14px;
+      border:1px dashed #ffb3c6;
+      background:#fff7fb;
+      font-size:13px;
+      color:#374151;
+    }
+
+    .sideTitle{margin:10px 0 0; font-weight:900}
+    .tiny{font-size:12px; color:var(--muted); margin-top:8px}
+
+    /* screens */
+    .screen{display:none}
+    .screen.active{display:block}
+
+    /* floating hearts */
+    .heart{
+      position:fixed; left:var(--x); top:110%;
+      width:14px; height:14px; background:var(--accent);
+      transform:rotate(45deg);
+      animation: floatUp var(--t) linear infinite;
+      opacity:.18;
+      pointer-events:none;
+    }
+    .heart::before,.heart::after{
+      content:""; position:absolute; width:14px; height:14px; background:inherit;
+      border-radius:50%;
+    }
+    .heart::before{left:-7px; top:0}
+    .heart::after{left:0; top:-7px}
+    @keyframes floatUp{
+      0%{transform:translateY(0) rotate(45deg) scale(var(--s)); opacity:.12}
+      18%{opacity:.32}
+      100%{transform:translateY(-130vh) rotate(45deg) scale(var(--s)); opacity:0}
+    }
+
+    /* YES modal */
+    .modal{
+      position:fixed; inset:0;
+      background:rgba(0,0,0,.35);
+      display:none; place-items:center; padding:18px;
+    }
+    .modal.open{display:grid}
+    .modalCard{
+      width:min(720px, 100%);
+      background:white;
+      border:1px solid #ffd1dd;
+      border-radius:20px;
+      padding:18px;
+      box-shadow: 0 18px 45px rgba(0,0,0,.18);
+      text-align:center;
+    }
+    .big{font-size:24px; font-weight:950; margin:6px 0 8px}
+    .gifGrid{
+      margin-top:12px;
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:10px;
+    }
+    @media (max-width:700px){ .gifGrid{grid-template-columns:1fr} }
+    .gifGrid img{
+      width:100%;
+      border-radius:14px;
+      border:1px solid #ffe2ea;
+      background:#fff7fb;
+      box-shadow:0 10px 18px rgba(17,24,39,.06);
+      display:block;
+    }
+    .linkBox{
+      margin-top:12px;
+      background:#fff7fb;
+      border:1px dashed #ffb3c6;
+      padding:10px 12px;
+      border-radius:14px;
+      word-break:break-word;
+      font-size:13px;
+      color:#374151;
+      text-align:left;
+      white-space:pre-line;
+    }
+
+    /* NO button readability + tiny wiggle */
+    .wiggle{
+      animation: wiggle .22s ease-in-out 1;
+    }
+    @keyframes wiggle{
+      0%{transform:translateX(0)}
+      25%{transform:translateX(-6px)}
+      50%{transform:translateX(6px)}
+      75%{transform:translateX(-4px)}
+      100%{transform:translateX(0)}
+    }
+
+    /* watermark */
+    .watermark{
+      position:fixed;
+      right:14px;
+      bottom:10px;
+      font-size:12px;
+      color:#9ca3af;
+      opacity:.65;
+      pointer-events:none;
+      z-index:9999;
+    }
+
+    /* ✅ UPDATED: bigger movement area for NO button */
+    .noArea{
+      position:relative;
+      width: min(560px, 100%);
+      height: 220px;
+      border-radius:18px;
+      border:1px dashed #ffd1dd;
+      background:rgba(255,255,255,.55);
+      padding:10px;
+      overflow:hidden;
+    }
+
+    /* Make NO button movable */
+    #noBtn{
+      position:absolute;
+      left:10px;
+      top:10px;
+      transition:left 140ms ease, top 140ms ease;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+
+      <!-- SCREEN 1: NAME INPUT -->
+      <section class="screen active" id="screen1">
+        <h1>Hi you 💖</h1>
+        <p class="muted">Before we begin… tell me your name (so I can be properly dramatic 😌)</p>
+
+        <div class="row" style="margin-top:12px">
+          <div>
+            <div class="inputRow">
+              <input id="nameInput" type="text" placeholder="Type your name here…" maxlength="24" />
+              <button class="primary" id="goBtn">Continue →</button>
+            </div>
+            <p class="tiny">P.S. If you type a fake name, I will still simp respectfully.</p>
+          </div>
+
+          <div class="side">
+            <div class="photoBox" id="photoBox1">
+              <img id="photoImg1" alt="uploaded" />
+              <div class="photoHint" id="photoHint1">Optional: upload your photo ✨</div>
+            </div>
+
+            <div class="uploadRow">
+              <input id="photoInput" type="file" accept="image/*" />
+            </div>
+
+            <div class="sideTitle">Mini note</div>
+            <div class="tiny">I put an unreasonable amount of effort into this tiny page… so if you smile even a little, mission accomplished 😌💘</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 2: QUESTION -->
+      <section class="screen" id="screen2">
+        <h1 id="helloLine">Hey… 💘</h1>
+        <p id="line1">I made this page for you because… you deserve effort.</p>
+        <p id="line2" class="muted">Now comes the important part:</p>
+
+        <div class="divider"></div>
+
+        <div class="row">
+          <div>
+            <h1 style="font-size:38px; margin-top:6px">Will you be my Valentine? 🌹</h1>
+            <div class="btns">
+              <button class="primary" id="yesBtn">YES 😳💞</button>
+              <div class="noArea" id="noArea">
+                <button class="secondary" id="noBtn" type="button">No 🙃</button>
+              </div>
+            </div>
+            <p class="tiny" id="tinyNote">No pressure. (But the "No" button is… suspicious.)</p>
+          </div>
+
+          <div class="side">
+            <div class="photoBox" id="photoBox2">
+              <img id="photoImg2" alt="uploaded" />
+              <div class="photoHint" id="photoHint2">No photo uploaded. We'll let imagination do the work.</div>
+            </div>
+
+            <div class="sideTitle" id="cardTitle">For you</div>
+            <div class="tiny">If you press YES, there are GIFs waiting 😌</div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- YES MODAL -->
+  <div class="modal" id="modal">
+    <div class="modalCard">
+      <div style="font-size:44px">🥰</div>
+      <div class="big" id="modalTitle">YAYYYYY!</div>
+      <p id="modalText" class="muted">Okay, now you're officially my favorite notification.</p>
+
+      <div class="gifGrid">
+        <img alt="gif1" src="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif">
+        <img alt="gif2" src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif">
+        <img alt="gif3" src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif">
+      </div>
+
+      <div class="linkBox" id="linkBox"></div>
+
+      <div class="btns" style="justify-content:center; margin-top:14px">
+        <button class="primary" id="copyBtn">Copy message</button>
+        <button class="secondary" id="closeBtn">Close</button>
+      </div>
+
+      <p class="tiny">Tip: take a screenshot and send it to him 😌</p>
+    </div>
+  </div>
+
+  <script>
+    // ====== SETTINGS ======
+    const SETTINGS = {
+      yourName: "Parixit",
+      line1: "I made this page for you because… you deserve effort.",
+      line2: "Now comes the important part:",
+      yesTitle: "YAYYYYY! 💘",
+      yesText: "So… when are we turning this YES into actual plans? 😌",
+
+      // Form 1: Name only (submitted on Continue)
+      form1: {
+        formEId: "1FAIpQLSfrYEC1BMFN4ec4vWdl9hQZt-WBm3Jk4ZmcpNwMHPTzp7rHUg",
+        fieldId: "entry.541753084"
+      },
+
+      // Form 2: Full response (submitted on YES)
+      form2: {
+        formEId: "1FAIpQLSdEbUAqYTgEWY27WQ5w1rO6fXvdV1QiExejAN7ePWFwpZSnlw",
+        fieldId: "entry.2039756823"
+      },
+
+      noTexts: [
+        "No 🙃","Are you sure? 🥺","Just checking… really sure? 😌","Hmm. That felt accidental 😅",
+        "Okay but my heart disagrees 💘","This button seems confused 😂","I respect your choice… but 👀",
+        "That click had hesitation energy","Take your time, I'll wait 🙂","Still cute either way 💗",
+        "You know YES is smiling at you","No pressure. Mild persuasion only 😇","Even the universe blinked just now ✨",
+        "That was bold. Unexpected. Iconic.","I admire the confidence 😌","This is becoming a conversation",
+        "Okay but imagine the GIFs 👀","Your finger slipped, didn't it?","I'll pretend I didn't see that",
+        "Interesting choice… fascinating","Still rooting for us though 💞","Plot twist unlocked",
+        "Rom-coms usually say YES here","Suspense is building 😳","The YES button feels ignored",
+        "No is mysterious, I'll give you that","Your honesty is appreciated 💐","This tension deserves background music",
+        "Okay, villain arc activated (jk)","I'll ask again, politely 😌","That was very main-character of you",
+        "No worries, still smiling here 🙂","Your move, protagonist","This is not a rejection, it's a pause",
+        "The YES button just sighed","Bold strategy, let's see how it plays out","You're enjoying this, aren't you? 😏",
+        "This feels like a slow-burn romcom","Romance loading… please wait","I'm still here, by the way 💗",
+        "Okay okay, I see you","No today… maybe yes in 2 seconds?","The suspense is cute though",
+        "Dramatic pause noted","Respectfully… reconsider?","No is temporary. GIFs are forever",
+        "You're making this interesting","Still hoping quietly 💘"
+      ]
+    };
+    // ======================
+
+    // Apply settings
+    document.getElementById("line1").textContent = SETTINGS.line1;
+    document.getElementById("line2").textContent = SETTINGS.line2;
+
+    // floating hearts
+    function spawnHearts(){
+      for(let i=0;i<16;i++){
+        const h=document.createElement("div");
+        h.className="heart";
+        h.style.setProperty("--x", Math.random()*100+"vw");
+        h.style.setProperty("--t", (7+Math.random()*7)+"s");
+        h.style.setProperty("--s", (0.6+Math.random()*1.6));
+        h.style.background = (Math.random()>0.5) ? "#ff2d55" : "#ff6b8a";
+        document.body.appendChild(h);
+        setTimeout(()=>h.remove(), 15000);
+      }
+    }
+    spawnHearts();
+    setInterval(spawnHearts, 6500);
+
+    const s1 = document.getElementById("screen1");
+    const s2 = document.getElementById("screen2");
+
+    const nameInput = document.getElementById("nameInput");
+    const goBtn = document.getElementById("goBtn");
+
+    const helloLine = document.getElementById("helloLine");
+    const cardTitle = document.getElementById("cardTitle");
+
+    // Photo elements
+    const photoInput = document.getElementById("photoInput");
+    const photoImg1 = document.getElementById("photoImg1");
+    const photoImg2 = document.getElementById("photoImg2");
+    const photoHint1 = document.getElementById("photoHint1");
+    const photoHint2 = document.getElementById("photoHint2");
+
+    function sanitizeName(v){
+      v = (v || "").trim();
+      if(!v) return "you";
+      return v.replace(/[^\p{L}\p{N} .'-]/gu, "").slice(0, 24) || "you";
+    }
+
+    // Function to get IST time string
+    function getISTTimeString() {
+      const now = new Date();
+      // Convert to IST (UTC+5:30)
+      const utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);
+      const istTime = new Date(utcTime + (5.5 * 60 * 60000));
+      
+      // Format: YYYY-MM-DDTHH:MM:SS.sssZ style but with IST
+      const year = istTime.getFullYear();
+      const month = String(istTime.getMonth() + 1).padStart(2, '0');
+      const day = String(istTime.getDate()).padStart(2, '0');
+      const hours = String(istTime.getHours()).padStart(2, '0');
+      const minutes = String(istTime.getMinutes()).padStart(2, '0');
+      const seconds = String(istTime.getSeconds()).padStart(2, '0');
+      const milliseconds = String(istTime.getMilliseconds()).padStart(3, '0');
+      
+      return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}Z`;
+    }
+
+    // Persist photo across navigation (within same browser)
+    function setPhoto(dataUrl){
+      if(!dataUrl){
+        sessionStorage.removeItem("valentine_photo");
+        photoImg1.style.display = "none";
+        photoImg2.style.display = "none";
+        photoHint1.style.display = "block";
+        photoHint2.style.display = "block";
+        return;
+      }
+      sessionStorage.setItem("valentine_photo", dataUrl);
+      photoImg1.src = dataUrl;
+      photoImg2.src = dataUrl;
+      photoImg1.style.display = "block";
+      photoImg2.style.display = "block";
+      photoHint1.style.display = "none";
+      photoHint2.style.display = "none";
+    }
+
+    // Load photo if already selected earlier
+    const savedPhoto = sessionStorage.getItem("valentine_photo");
+    if(savedPhoto) setPhoto(savedPhoto);
+
+    photoInput.addEventListener("change", (e)=>{
+      const file = e.target.files && e.target.files[0];
+      if(!file) { setPhoto(null); return; }
+      if(!file.type.startsWith("image/")) { setPhoto(null); return; }
+
+      const reader = new FileReader();
+      reader.onload = () => setPhoto(reader.result);
+      reader.readAsDataURL(file);
+    });
+
+    // -------- Submit Form 1 (Name only when Continue clicked) ----------
+    function submitForm1(herName) {
+      const { formEId, fieldId } = SETTINGS.form1;
+      if (!formEId || !fieldId) {
+        console.warn("Form 1 IDs not properly configured.");
+        return;
+      }
+
+      const formUrl = `https://docs.google.com/forms/d/e/${formEId}/formResponse`;
+      const body = new URLSearchParams();
+      body.append(fieldId, herName);
+
+      // Submit to Form 1
+      fetch(formUrl, {
+        method: "POST",
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: body.toString()
+      }).then(() => {
+        console.log("Form 1 submitted successfully (name only)");
+      }).catch(error => {
+        console.log("Form 1 submission attempted (no-cors mode)");
+      });
+    }
+
+    // -------- Submit Form 2 (Full response when YES clicked) ----------
+    function submitForm2(herName) {
+      // Check if already submitted to prevent duplicates
+      const form2Key = `form2_submitted_${herName}`;
+      if (localStorage.getItem(form2Key) === "1") {
+        console.log("Form 2 already submitted for this name");
+        return;
+      }
+
+      const { formEId, fieldId } = SETTINGS.form2;
+      if (!formEId || !fieldId) {
+        console.warn("Form 2 IDs not properly configured.");
+        return;
+      }
+
+      // Get IST time
+      const istTime = getISTTimeString();
+      
+      // Format exactly as requested with IST time
+      const payloadText = `YES | Name: ${herName} | Time: ${istTime}`;
+      
+      console.log("Form 2 payload:", payloadText);
+      
+      const formUrl = `https://docs.google.com/forms/d/e/${formEId}/formResponse`;
+      const body = new URLSearchParams();
+      body.append(fieldId, payloadText);
+
+      // Submit to Form 2
+      fetch(formUrl, {
+        method: "POST",
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: body.toString()
+      }).then(() => {
+        console.log("Form 2 submitted successfully with IST time");
+        localStorage.setItem(form2Key, "1");
+      }).catch(error => {
+        console.log("Form 2 submission attempted (no-cors mode)");
+      });
+    }
+
+    function goNext(){
+      const herName = sanitizeName(nameInput.value);
+      helloLine.textContent = `Hey ${herName}… 💘`;
+      cardTitle.textContent = `For ${herName}`;
+
+      // Submit to Form 1 (name only)
+      submitForm1(herName);
+
+      s1.classList.remove("active");
+      s2.classList.add("active");
+    }
+
+    goBtn.addEventListener("click", goNext);
+    nameInput.addEventListener("keydown", (e)=>{
+      if(e.key === "Enter") goNext();
+    });
+
+    // NO button: first loop no repeats (shuffled), then random
+    const noBtn = document.getElementById("noBtn");
+    let noQueue = [];
+    let noIndex = 0;
+
+    function makeShuffledQueue(arr) {
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function nextNoText() {
+      if (noQueue.length === 0) noQueue = makeShuffledQueue(SETTINGS.noTexts);
+      if (noIndex < noQueue.length) return noQueue[noIndex++];
+      return SETTINGS.noTexts[Math.floor(Math.random() * SETTINGS.noTexts.length)];
+    }
+
+    const noArea = document.getElementById("noArea");
+
+    /* ✅ UPDATED: force a real jump, not tiny shake */
+    let lastX = -999, lastY = -999;
+
+    noBtn.addEventListener("click", () => {
+      noBtn.textContent = nextNoText();
+
+      const areaRect = noArea.getBoundingClientRect();
+      const btnRect  = noBtn.getBoundingClientRect();
+
+      const maxX = Math.max(0, areaRect.width - btnRect.width);
+      const maxY = Math.max(0, areaRect.height - btnRect.height);
+
+      const MIN_DIST = 80;
+      let x = 0, y = 0;
+
+      for (let tries = 0; tries < 40; tries++) {
+        x = Math.floor(Math.random() * (maxX + 1));
+        y = Math.floor(Math.random() * (maxY + 1));
+        if (Math.hypot(x - lastX, y - lastY) >= MIN_DIST) break;
+      }
+
+      lastX = x; lastY = y;
+
+      noBtn.style.left = x + "px";
+      noBtn.style.top  = y + "px";
+
+      noBtn.classList.remove("wiggle");
+      void noBtn.offsetWidth;
+      noBtn.classList.add("wiggle");
+    });
+
+    // YES modal + confetti
+    const modal = document.getElementById("modal");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalText = document.getElementById("modalText");
+    const linkBox = document.getElementById("linkBox");
+
+    document.getElementById("yesBtn").addEventListener("click", ()=>{
+      const herName = sanitizeName(nameInput.value);
+
+      // Submit to Form 2 (full response with IST time)
+      submitForm2(herName);
+
+      modalTitle.textContent = SETTINGS.yesTitle;
+      modalText.textContent = SETTINGS.yesText;
+
+      const msg =
+`She said YES 💘
+Valentine: ${herName}
+From: ${SETTINGS.yourName}
+Date: ${new Date().toDateString()}`;
+
+      linkBox.textContent = msg;
+
+      modal.classList.add("open");
+      confettiBurst();
+    });
+
+    document.getElementById("closeBtn").addEventListener("click", ()=>{
+      modal.classList.remove("open");
+    });
+    modal.addEventListener("click", (e)=>{
+      if(e.target===modal) modal.classList.remove("open");
+    });
+
+    document.getElementById("copyBtn").addEventListener("click", async ()=>{
+      try{
+        await navigator.clipboard.writeText(linkBox.textContent);
+        const btn = document.getElementById("copyBtn");
+        btn.textContent = "Copied ✅";
+        setTimeout(()=>btn.textContent="Copy message", 1200);
+      }catch(e){
+        alert("Copy didn't work—just screenshot it 😄");
+      }
+    });
+
+    function confettiBurst(){
+      const n = 140;
+      for(let i=0;i<n;i++){
+        const s=document.createElement("span");
+        s.style.position="fixed";
+        s.style.left=(innerWidth/2)+"px";
+        s.style.top=(innerHeight/2)+"px";
+        s.style.width="6px"; s.style.height="10px";
+        s.style.background = (Math.random()>0.5) ? "#ff2d55" : "#ff6b8a";
+        s.style.opacity="0.95";
+        s.style.borderRadius="2px";
+        s.style.pointerEvents="none";
+        const a=Math.random()*Math.PI*2;
+        const r=80+Math.random()*280;
+        const x=Math.cos(a)*r;
+        const y=Math.sin(a)*r;
+        s.animate([
+          {transform:"translate(0,0) rotate(0deg)"},
+          {transform:`translate(${x}px, ${y}px) rotate(${Math.random()*720}deg)`, opacity:0}
+        ], {duration:900+Math.random()*750, easing:"cubic-bezier(.2,.7,.2,1)"});
+        document.body.appendChild(s);
+        setTimeout(()=>s.remove(), 1800);
+      }
+    }
+  </script>
+
+  <div class="watermark">Parixit</div>
+</body>
+</html>
